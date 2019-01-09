@@ -1,58 +1,72 @@
-# bob.gradiant.pad.evaluator 
+# bob.gradiant.pad.evaluator [![Build Status](https://travis-ci.org/Gradiant/bob.gradiant.pad.evaluator.svg?branch=master)](https://travis-ci.org/Gradiant/bob.gradiant.core) [![Doc](http://img.shields.io/badge/docs-latest-orange.svg)](https://gradiant.github.io/bob.gradiant.pad.evaluator/)
 
 [Bob](https://www.idiap.ch/software/bob/) package with several scripts to launch experiments aimed at the field of anti-spoofing. 
 Several of these scripts take real-world parameters (framerate, acquisition time, etc.) into account, so they allow us to bring several perspectives to our evaluation.
 
-## Environment
+## Docker 
 
-We strongly recommend to use [conda](https://conda.io/docs/) to manage the project environment.
+The fastest way to contact the package is to use docker. 
 
-There is available two shared recipes to create the enviroment for this project on anaconda cloud.
-
-*Linux*
-~~~
-conda env create gradiant/biometrics_py27
-~~~
-
-*Mac Os*
-~~~
-conda env create gradiant/biometrics_mac_py27
-~~~
-
-If you prefer to install the environment from yaml files:
-
-*Linux*
-~~~
-conda env create -f environments/biometrics_ubuntu_py27.yml
-~~~
-
-*Mac Os*
-~~~
-conda env create -f environments/biometrics_mac_py27.yml
-~~~
-
-## Installation
-
-We assume you have activate biometrics_py27 (or biometrics_mac_py27) environment 
+You can download the docker image from dockerhub
 
 ~~~
-source activate biometrics_py27
+docker pull acostapazo/bob.gradiant:latest 
 ~~~
 
-Then, you can buildout the project with:
+or build it from Dockerfile
 
 ~~~
-  cd bob.gradiant.pad.evaluator
-  python bootstrap-buildout.py
-  bin/buildout
+docker build --no-cache -t acostapazo/bob.gradiant:latest  .
 ~~~
+
+To check if everything is alright you can run the ci.sh script with:
+
+~~~
+docker run -v $(pwd):/bob.gradiant.pad.evaluator acostapazo/bob.gradiant:latest bin/bash -c "cd bob.gradiant.pad.evaluator; ./ci.sh"
+~~~
+
+## Installation (Manual)
+
+
+1. Install conda -> https://conda.io/docs/user-guide/install/index.html
+
+2. Create the conda env from file (environment_linux.yml)
+
+Note: You should be inside the package directory (bob.gradiant)
+
+~~~
+    conda create --name bob.gradiant python=2.7
+    conda config --env --add channels defaults
+    conda config --env --add channels https://www.idiap.ch/software/bob/conda
+~~~
+
+3. Activate the environment
+
+~~~
+   source activate bob.gradiant
+~~~
+
+4. Install dependencies
+
+~~~
+    conda install gitpython h5py pillow scikit-learn mock sphinx_rtd_theme bob.extension
+    pip install enum34
+~~~
+
+
+4. Buildout the bob package
+
+~~~
+    #You should be inside the activated conda env (bob.gradiant.pipelines)
+    python bootstrap-buildout.py
+    bin/buildout
+~~
 
 ## Test
 
 ~~~
   bin/nosetests -v
 ~~~
-
 
 ## Clean
 
@@ -75,6 +89,7 @@ Coverage result will be store on htmlcov/.
 ~~~
 bin/sphinx-build -b html doc/ doc/html/
 ~~~
+
 
 
 ## Console scripts
