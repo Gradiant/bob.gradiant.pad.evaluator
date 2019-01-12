@@ -15,7 +15,7 @@ class FacePad(object):
         raise NotImplementedError
 
     @abstractmethod
-    def isfinished(self):
+    def is_finished(self):
         raise NotImplementedError
 
     @abstractmethod
@@ -23,5 +23,5 @@ class FacePad(object):
         raise NotImplementedError
 
     @abstractmethod
-    def get_decission(self):
+    def get_decision(self):
         raise NotImplementedError

@@ -112,12 +112,12 @@ class EndToEndEvaluationProtocol(EvaluationProtocol):
                 for key, image in dict_images.iteritems():
                     self.configuration.face_pad.process(image)
                     processed_frames += 1
-                    if self.configuration.face_pad.isfinished():
+                    if self.configuration.face_pad.is_finished():
                         break
                 cpu_time = time.time() * 1000 - start_time_cpu_processing
 
                 start_time_decision = time.time() * 1000
-                label, score = self.configuration.face_pad.get_decission()
+                label, score = self.configuration.face_pad.get_decision()
                 time_of_delay = time.time() * 1000 - start_time_decision
                 if label == "FAILURE_TO_COMPUTE":
                     failure_accesses += 1

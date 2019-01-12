@@ -11,13 +11,13 @@ class DummyFacePad(FacePad):
     def process(self, im):
         self.im_array.append(im)
 
-    def isfinished(self):
+    def is_finished(self):
         pass
 
     def reset(self):
         pass
 
-    def get_decission(self):
+    def get_decision(self):
         self.im_array = []
         self.count += 1
         if self.count % 2:
