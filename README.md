@@ -1,4 +1,4 @@
-# bob.gradiant.pad.evaluator [![Build Status](https://travis-ci.org/Gradiant/bob.gradiant.pad.evaluator.svg?branch=master)](https://travis-ci.org/Gradiant/bob.gradiant.core) [![Doc](http://img.shields.io/badge/docs-latest-orange.svg)](https://gradiant.github.io/bob.gradiant.pad.evaluator/)
+# bob.gradiant.pad.evaluator [![Build Status](https://travis-ci.org/Gradiant/bob.gradiant.pad.evaluator.svg?branch=master)](https://travis-ci.org/Gradiant/bob.gradiant.pad.evaluator) [![Doc](http://img.shields.io/badge/docs-latest-orange.svg)](https://gradiant.github.io/bob.gradiant.pad.evaluator/)
 
 [Bob](https://www.idiap.ch/software/bob/) package with several scripts to launch experiments aimed at the field of anti-spoofing. 
 Several of these scripts take real-world parameters (framerate, acquisition time, etc.) into account, so they allow us to bring several perspectives to our evaluation.
