@@ -9,7 +9,7 @@ before_install:
   - docker pull acostapazo/bob.gradiant:latest
 
 script:
-  - docker run -v $(pwd):/bob.gradiant.pad.evaluator acostapazo/bob.gradiant:latest bin/bash -c "cd bob.gradiant.pad.evaluator; ./ci.sh"
+  - docker run -v $(pwd):/bob.gradiant.pad.evaluator acostapazo/bob.gradiant:latest bin/bash -c "source activate bob.gradiant; cd bob.gradiant.pad.evaluator; ./ci.sh"
 
 # Deploy using travis builtin GitHub Pages support
 deploy:
