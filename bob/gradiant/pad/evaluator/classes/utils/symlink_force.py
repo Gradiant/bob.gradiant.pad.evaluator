@@ -9,7 +9,7 @@ def symlink_force(target, link_name):
     target = os.path.abspath(target)
     try:
         os.symlink(target, link_name)
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.EEXIST:
             try:
                 os.remove(link_name)

@@ -129,7 +129,7 @@ class EndToEndEvaluationProtocol(EvaluationProtocol):
                 labels_list.append(label)
                 benchmark_labels_list += subset_ground_truth
 
-        print '\n\t\tFAILURE_TO_COMPUTE accesses: ' + str(failure_accesses) + '/' + str(len(subset_accesses))
+        print('\n\t\tFAILURE_TO_COMPUTE accesses: ' + str(failure_accesses) + '/' + str(len(subset_accesses)))
 
         end_to_end_info = EndToEndInfo(name_algorithm,
                                        framerate,
