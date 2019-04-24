@@ -136,7 +136,7 @@ class Configuration(object):
             else:
                 databases_list_objects = []
                 for key_database in self.databases_list:
-                    if isinstance(key_database, basestring):
+                    if isinstance(key_database, str):
                         if key_database not in face_available_databases:
                             raise ValueError('\'{}\' is not one of the implemented databases or the path is not we. '
                                              'Try with: {}'.format(key_database, face_available_databases))
@@ -188,7 +188,7 @@ class Configuration(object):
             raise TypeError(
                 'result_path is not defined (None Value). Please fill it out on \'{}\''.format(self.configuration_file))
 
-        if not isinstance(self.result_path, basestring):
+        if not isinstance(self.result_path, str):
             raise TypeError(
                 'result_path is not defined (None Value). Please fill it out on \'{}\''.format(self.configuration_file))
 
