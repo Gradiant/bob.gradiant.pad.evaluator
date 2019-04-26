@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Gradiant's Biometrics Team <biometrics.support@gradiant.org>
-# Copyright (C) 2017 Gradiant, Vigo, Spain
+# Copyright (C) 2019+ Gradiant, Vigo, Spain
 import unittest
 import os
 import shutil
@@ -94,7 +94,8 @@ class UnitTestAlgorithmicUnconstrainedEvaluationProtocol(unittest.TestCase):
         # Modifying skip_features_extraction
         self.configuration.skip_features_extraction = True
         self.configuration.dict_extracted_features_paths = {
-            self.configuration.databases_list[0].name(): os.path.join(TestUtils.get_resources_path(), 'features')}
+            self.configuration.databases_list[0].name():
+                {'AUE': os.path.join(TestUtils.get_resources_path(), 'features')}}
 
         algorithmic_unconstrained_evaluation_protocol = AlgorithmicUnconstrainedEvaluationProtocol(self.configuration)
         algorithmic_unconstrained_evaluation_protocol.run()
@@ -111,6 +112,7 @@ class UnitTestAlgorithmicUnconstrainedEvaluationProtocol(unittest.TestCase):
     def test_run_configuration_loading_scores_from_correct_path_and_skip_scores_prediction(self):
         # Modifying skip_scores_prediction
         self.configuration.skip_scores_prediction = True
+
         self.configuration.dict_scores_prediction = {self.configuration.databases_list[0].name():
                                                          {'AUE': os.path.join(TestUtils.get_resources_path(),
                                                                               'experiment_result')}}
@@ -124,7 +126,7 @@ class UnitTestAlgorithmicUnconstrainedEvaluationProtocol(unittest.TestCase):
 
             for protocol in self.configuration.protocols_list:
                 for subset in ['Train', 'Dev', 'Test']:
-                    link_path = '{}/pipelines/test_approach_pca095_linear_svc/experiment_result/{}/{}/whole_video.h5'\
+                    link_path = '{}/pipelines/test_approach_pca095_linear_svc/experiment_result/{}/{}/whole_video.h5' \
                         .format(root_path,
                                 protocol,
                                 subset)

@@ -1,10 +1,10 @@
-from bob.gradiant.core import AccessModificator, Access
+from bob.gradiant.core import AccessModifier, Access
 import numpy as np
 
 
 class DummyAccess(Access):
 
-    def __init__(self, base_path, name, access_modificator=AccessModificator(), annotation_base_path=None):
+    def __init__(self, base_path, name, access_modificator=AccessModifier(), annotation_base_path=None):
         self.name = name
         super(DummyAccess, self).__init__(base_path,
                                           name,

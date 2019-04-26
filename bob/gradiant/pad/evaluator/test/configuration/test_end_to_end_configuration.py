@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # Gradiant's Biometrics Team <biometrics.support@gradiant.org>
-# Copyright (C) 2017 Gradiant, Vigo, Spain
+# Copyright (C) 2019+ Gradiant, Vigo, Spain
 import unittest
 import os
 import shutil
 from bob.gradiant.pad.evaluator import EndToEndConfiguration
-from bob.gradiant.pad.evaluator import DummyDatabase, DummyFacePad
+from bob.gradiant.pad.evaluator import DummyFacePad
+from bob.gradiant.face.databases import DummyDatabase
 
 
 class UnitTestEndToEndConfiguration(unittest.TestCase):
@@ -17,7 +18,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
     result_path = 'result'
     framerate = 10
     total_time_acquisition = 500
-    threshold = 0.0
     verbose = True
 
     def tearDown(self):
@@ -29,12 +29,8 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                           lambda: EndToEndConfiguration.fromfilename('WRONG')
                           )
 
-
-
     def test_init_fromfilename_correct_params(self):
         EndToEndConfiguration.fromfilename(self.configuration_file)
-
-
 
     def test_init_correct_params_but_database_path_not_defined(self):
 
@@ -51,7 +47,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                 self.result_path,
                                                 framerate = self.framerate,
                                                 total_time_acquisition = self.total_time_acquisition,
-                                                threshold= self.threshold,
                                                 verbose = self.verbose)
                           )
 
@@ -67,7 +62,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         self.result_path,
                                                         framerate=self.framerate,
                                                         total_time_acquisition=self.total_time_acquisition,
-                                                        threshold=self.threshold,
                                                         verbose=self.verbose)
                           )
 
@@ -80,7 +74,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         self.result_path,
                                                         framerate=self.framerate,
                                                         total_time_acquisition=self.total_time_acquisition,
-                                                        threshold=self.threshold,
                                                         verbose=self.verbose)
                           )
 
@@ -94,7 +87,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         self.result_path,
                                                         framerate=self.framerate,
                                                         total_time_acquisition=self.total_time_acquisition,
-                                                        threshold=self.threshold,
                                                         verbose=self.verbose)
                           )
         del os.environ["REPLAY_ATTACK_PATH"]
@@ -109,7 +101,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         self.result_path,
                                                         framerate=self.framerate,
                                                         total_time_acquisition=self.total_time_acquisition,
-                                                        threshold=self.threshold,
                                                         verbose=self.verbose)
                           )
         del os.environ["REPLAY_ATTACK_PATH"]
@@ -124,7 +115,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         None,
                                                         framerate=self.framerate,
                                                         total_time_acquisition=self.total_time_acquisition,
-                                                        threshold=self.threshold,
                                                         verbose=self.verbose)
                           )
         del os.environ["REPLAY_ATTACK_PATH"]
@@ -139,7 +129,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         ['WRONG_PARAM'],
                                                         framerate=self.framerate,
                                                         total_time_acquisition=self.total_time_acquisition,
-                                                        threshold=self.threshold,
                                                         verbose=self.verbose)
                           )
         del os.environ["REPLAY_ATTACK_PATH"]
@@ -154,7 +143,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         self.result_path,
                                                         framerate=None,
                                                         total_time_acquisition=self.total_time_acquisition,
-                                                        threshold=self.threshold,
                                                         verbose=self.verbose)
                           )
         del os.environ["REPLAY_ATTACK_PATH"]
@@ -169,7 +157,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         self.result_path,
                                                         framerate='WRONG',
                                                         total_time_acquisition=self.total_time_acquisition,
-                                                        threshold=self.threshold,
                                                         verbose=self.verbose)
                           )
         del os.environ["REPLAY_ATTACK_PATH"]
@@ -184,7 +171,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         self.result_path,
                                                         framerate=self.framerate,
                                                         total_time_acquisition=None,
-                                                        threshold=self.threshold,
                                                         verbose=self.verbose)
                           )
         del os.environ["REPLAY_ATTACK_PATH"]
@@ -199,7 +185,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         self.result_path,
                                                         framerate=self.framerate,
                                                         total_time_acquisition='WRONG',
-                                                        threshold=self.threshold,
                                                         verbose=self.verbose)
                           )
         del os.environ["REPLAY_ATTACK_PATH"]
@@ -244,7 +229,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         self.result_path,
                                                         framerate=self.framerate,
                                                         total_time_acquisition=self.total_time_acquisition,
-                                                        threshold=self.threshold,
                                                         verbose=None)
                           )
         del os.environ["REPLAY_ATTACK_PATH"]
@@ -259,7 +243,6 @@ class UnitTestEndToEndConfiguration(unittest.TestCase):
                                                         self.result_path,
                                                         framerate=self.framerate,
                                                         total_time_acquisition=self.total_time_acquisition,
-                                                        threshold=self.threshold,
                                                         verbose='WRONG')
                           )
         del os.environ["REPLAY_ATTACK_PATH"]

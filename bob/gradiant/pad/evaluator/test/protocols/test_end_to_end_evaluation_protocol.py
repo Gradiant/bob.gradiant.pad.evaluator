@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Gradiant's Biometrics Team <biometrics.support@gradiant.org>
-# Copyright (C) 2017 Gradiant, Vigo, Spain
+# Copyright (C) 2019+ Gradiant, Vigo, Spain
 import unittest
 import os
 import shutil
@@ -16,8 +16,9 @@ class UnitTestEndToEndEvaluationProtocol(unittest.TestCase):
         self.configuration.verbose = False
 
     def tearDown(self):
-        if os.path.isdir('result'):
-            shutil.rmtree('result')
+        pass
+        #if os.path.isdir('result'):
+        #    shutil.rmtree('result')
 
     def test_init_none_configuration(self):
         self.assertRaises(TypeError,
@@ -26,6 +27,11 @@ class UnitTestEndToEndEvaluationProtocol(unittest.TestCase):
 
     def test_init_correct_configuration(self):
         EndToEndEvaluationProtocol(self.configuration)
+
+
+    def test_run_correct_configuration(self):
+        algorithmic_constrained_evaluation_protocol = EndToEndEvaluationProtocol(self.configuration)
+        algorithmic_constrained_evaluation_protocol.run()
 
     '''
     TODO

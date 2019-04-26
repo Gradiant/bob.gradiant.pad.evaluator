@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 # Gradiant's Biometrics Team <biometrics.support@gradiant.org>
-# Copyright (C) 2017 Gradiant, Vigo, Spain
+# Copyright (C) 2019+ Gradiant, Vigo, Spain
 import time
 import cpuinfo
 import sys
 import os
-import pickle
-from time import gmtime, strftime
 from bob.gradiant.pad.evaluator.classes.configuration.evaluation_config import evaluation_long_names
 from bob.gradiant.pad.evaluator.classes.configuration.end_to_end_configuration import EndToEndConfiguration
 from bob.gradiant.pad.evaluator.classes.protocols.evaluation_protocol import EvaluationProtocol
-from bob.gradiant.core import Informer, Colors, AccessModificator, TypeDatabase, EndToEndTableGenerator, EndToEndInfo
+from bob.gradiant.core import Informer, Colors, AccessModifier, TypeDatabase, EndToEndTableGenerator, EndToEndInfo
 
 SUBSETS_TO_EVALUATE = ['Test']
 
@@ -70,19 +68,18 @@ class EndToEndEvaluationProtocol(EvaluationProtocol):
     def __extract_pad_results(self, scores_filename, database, protocol):
 
         self.informer.highlight_message(
-            'end-to-end parameters [framerate = {}, total_time_acquisition = {}, threshold = {}]'.format(
+            'end-to-end parameters [framerate = {}, total_time_acquisition = {}]'.format(
                 self.configuration.framerate,
-                self.configuration.total_time_acquisition,
-                self.configuration.threshold),
+                self.configuration.total_time_acquisition),
             title='\tEnd-to-end extraction',
             color=Colors.FG.lightcyan)
 
-        access_modificator = AccessModificator(self.configuration.framerate, self.configuration.total_time_acquisition)
+        access_modifier = AccessModifier(self.configuration.framerate, self.configuration.total_time_acquisition)
 
         if database.type_database is TypeDatabase.ALL_FILES_TOGETHER:
-            dict_accesses = database.get_accesses_by_subset(access_modificator)
+            dict_accesses = database.get_accesses_by_subset(access_modifier)
         else:
-            dict_accesses = database.get_all_accesses(access_modificator)
+            dict_accesses = database.get_all_accesses(access_modifier)
         self.informer.set_title('Extracting pad results')
         info = cpuinfo.get_cpu_info()
 
@@ -109,15 +106,15 @@ class EndToEndEvaluationProtocol(EvaluationProtocol):
                 progressBar(i + 1, len(subset_accesses), access.name)
                 dict_images = access.load()
                 start_time_cpu_processing = time.time() * 1000
-                for key, image in dict_images.iteritems():
+                for key, image in dict_images.items():
                     self.configuration.face_pad.process(image)
                     processed_frames += 1
-                    if self.configuration.face_pad.is_finished():
+                    if self.configuration.face_pad.isfinished():
                         break
                 cpu_time = time.time() * 1000 - start_time_cpu_processing
 
                 start_time_decision = time.time() * 1000
-                label, score = self.configuration.face_pad.get_decision()
+                label, score = self.configuration.face_pad.get_decission()
                 time_of_delay = time.time() * 1000 - start_time_decision
                 if label == "FAILURE_TO_COMPUTE":
                     failure_accesses += 1
@@ -127,7 +124,8 @@ class EndToEndEvaluationProtocol(EvaluationProtocol):
                 time_of_delay_list.append(time_of_delay)
                 cpu_time_list.append(cpu_time)
                 labels_list.append(label)
-                benchmark_labels_list += subset_ground_truth
+
+                benchmark_labels_list.append('ATTACK' if subset_ground_truth[access.name] == 1 else 'NO_ATTACK')
 
         print('\n\t\tFAILURE_TO_COMPUTE accesses: ' + str(failure_accesses) + '/' + str(len(subset_accesses)))
 
@@ -144,7 +142,7 @@ class EndToEndEvaluationProtocol(EvaluationProtocol):
         end_to_end_info.save(scores_filename)
         return end_to_end_info
 
-    def __evaluation(self, result_path, end_to_end_info):
+    def __evaluation(self, result_path, end_to_end_info, name_algorithm='Evaluated algorithm'):
 
         self.informer.highlight_message(
             'ok',
@@ -155,4 +153,4 @@ class EndToEndEvaluationProtocol(EvaluationProtocol):
                                                             self.configuration.face_pad.name,
                                                             dict(end_to_end_info),
                                                             result_path)
-        end_to_end_table_generator.run()
+        end_to_end_table_generator.run(name_algorithm=name_algorithm)
