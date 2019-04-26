@@ -1,0 +1,493 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bob.gradiant.pad.evaluator.classes.protocols.protocol_utils &mdash; bob.gradiant.pad.evaluator 1.1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../../../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../../search.html" /> 
+
+  
+  <script src="../../../../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../../../../index.html" class="icon icon-home"> bob.gradiant.pad.evaluator
+          
+
+          
+            
+            <img src="../../../../../../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../py_api.html">Python API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../../index.html">bob.gradiant.pad.evaluator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>bob.gradiant.pad.evaluator.classes.protocols.protocol_utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bob.gradiant.pad.evaluator.classes.protocols.protocol_utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># Gradiant&#39;s Biometrics Team &lt;biometrics.support@gradiant.org&gt;</span>
+<span class="c1"># Copyright (C) 2019+ Gradiant, Vigo, Spain</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">gmtime</span><span class="p">,</span> <span class="n">strftime</span>
+<span class="kn">from</span> <span class="nn">bob.gradiant.pipelines</span> <span class="k">import</span> <span class="n">ProcessorOutputType</span>
+<span class="kn">from</span> <span class="nn">bob.gradiant.core</span> <span class="k">import</span> <span class="n">PipelineFeaturesFormatLoader</span><span class="p">,</span> <span class="n">ExperimentResult</span><span class="p">,</span> <span class="n">Colors</span><span class="p">,</span> <span class="n">PadEvaluator</span><span class="p">,</span> \
+    <span class="n">PadVisualizationManager</span><span class="p">,</span> <span class="n">TypeDatabase</span><span class="p">,</span> <span class="n">AccessModifier</span><span class="p">,</span> <span class="n">MultiprocessManager</span>
+
+<span class="kn">from</span> <span class="nn">bob.gradiant.pad.evaluator.classes.utils.protocol_info</span> <span class="k">import</span> <span class="n">get_protocol_info</span><span class="p">,</span> <span class="n">save_protocol_info</span>
+<span class="kn">from</span> <span class="nn">..utils.symlink_force</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">SPACES</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="mi">80</span>
+<span class="n">LINE</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span>
+
+
+<div class="viewcode-block" id="ProtocolUtils"><a class="viewcode-back" href="../../../../../../../py_api.html#bob.gradiant.pad.evaluator.ProtocolUtils">[docs]</a><span class="k">class</span> <span class="nc">ProtocolUtils</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">informer</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">experiment_paths</span><span class="p">,</span> <span class="n">name_experiment</span><span class="p">,</span> <span class="n">data_augmentator</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">informer</span> <span class="o">=</span> <span class="n">informer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">experiment_paths</span> <span class="o">=</span> <span class="n">experiment_paths</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_experiment</span> <span class="o">=</span> <span class="n">name_experiment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_augmentator</span> <span class="o">=</span> <span class="n">data_augmentator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span> <span class="o">=</span> <span class="n">configuration</span>
+
+<div class="viewcode-block" id="ProtocolUtils.extract_features"><a class="viewcode-back" href="../../../../../../../py_api.html#bob.gradiant.pad.evaluator.ProtocolUtils.extract_features">[docs]</a>    <span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features_path</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="n">access_modifier</span> <span class="o">=</span> <span class="n">AccessModifier</span><span class="p">(</span><span class="n">target_framerate</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;framerate&#39;</span><span class="p">],</span>
+                                             <span class="n">target_duration</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;total_time_acquisition&#39;</span><span class="p">],</span>
+                                             <span class="n">starting_time</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;starting_time_acquisition&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">access_modifier</span> <span class="o">=</span> <span class="n">AccessModifier</span><span class="p">()</span>
+
+        <span class="n">dict_accesses</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">get_all_accesses</span><span class="p">(</span><span class="n">access_modifier</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Extracting features&#39;</span><span class="p">)</span>
+
+        <span class="n">len_total_accesses</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">subset</span><span class="p">,</span> <span class="n">accesses</span> <span class="ow">in</span> <span class="n">dict_accesses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">enable_data_augmentation</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">subset</span> <span class="ow">is</span> <span class="s1">&#39;Train&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">use_data_augmentation</span><span class="p">:</span>
+                <span class="n">enable_data_augmentation</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__extract_from_accesses</span><span class="p">(</span><span class="n">features_path</span><span class="p">,</span> <span class="n">subset</span><span class="p">,</span> <span class="n">accesses</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="o">=</span><span class="n">enable_data_augmentation</span><span class="p">)</span>
+            <span class="n">len_total_accesses</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">accesses</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="s1">&#39;Finished. Extracted </span><span class="si">{}</span><span class="s1"> features</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">len_total_accesses</span><span class="p">,</span> <span class="n">SPACES</span><span class="p">),</span>
+                              <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">FG</span><span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__extract_from_accesses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features_path</span><span class="p">,</span> <span class="n">subset</span><span class="p">,</span> <span class="n">accesses</span><span class="p">,</span> <span class="n">data_augmentation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="n">features_extractor_manager</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">features_extractor_manager</span>
+        <span class="n">multiprocess_manager</span> <span class="o">=</span> <span class="n">MultiprocessManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">number_threads</span><span class="p">)</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">features_extractor_manager</span><span class="o">.</span><span class="n">set_base_path</span><span class="p">(</span><span class="n">features_path</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">access</span> <span class="ow">in</span> <span class="n">accesses</span><span class="p">:</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">informer</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">data_augmentation</span><span class="p">:</span>
+                <span class="n">text_data_augmentation</span> <span class="o">=</span> <span class="s1">&#39;[data augmentation] &#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">text_data_augmentation</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+                <span class="s1">&#39;  &gt;[</span><span class="si">{}</span><span class="s1">][</span><span class="si">{}</span><span class="s1">]</span><span class="si">{}</span><span class="s1">--&gt; </span><span class="si">{}</span><span class="s1"> [</span><span class="si">{}</span><span class="s1">|</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span> <span class="n">access</span><span class="o">.</span><span class="n">database_name</span><span class="p">,</span> <span class="n">text_data_augmentation</span><span class="p">,</span> <span class="n">access</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                     <span class="n">counter</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">accesses</span><span class="p">)))</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">access</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">recreate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_augmentator</span><span class="p">))</span>
+
+        <span class="n">multiprocess_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">features_extractor_manager</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProtocolUtils.already_exist_experiment_results"><a class="viewcode-back" href="../../../../../../../py_api.html#bob.gradiant.pad.evaluator.ProtocolUtils.already_exist_experiment_results">[docs]</a>    <span class="k">def</span> <span class="nf">already_exist_experiment_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">subsets</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">exist</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">subsets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">subset</span> <span class="o">!=</span> <span class="s2">&quot;Train&quot;</span><span class="p">:</span>
+                <span class="n">experiment_result_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_paths</span><span class="o">.</span><span class="n">get_experiment_result_path</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="n">subset</span><span class="p">)</span>
+                <span class="n">suffix_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_experiment_result_filename_from_parameter</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">experiment_result_path</span><span class="p">,</span> <span class="n">suffix_filename</span><span class="p">)</span>
+                <span class="n">exist_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+                <span class="n">exist</span> <span class="o">=</span> <span class="n">exist</span> <span class="ow">and</span> <span class="n">exist_file</span>
+        <span class="k">return</span> <span class="n">exist</span></div>
+
+<div class="viewcode-block" id="ProtocolUtils.get_experiment_result_filename_from_parameter"><a class="viewcode-back" href="../../../../../../../py_api.html#bob.gradiant.pad.evaluator.ProtocolUtils.get_experiment_result_filename_from_parameter">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_experiment_result_filename_from_parameter</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="n">suffix_filename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">.h5&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;framerate&#39;</span><span class="p">],</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;total_time_acquisition&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">suffix_filename</span> <span class="o">=</span> <span class="s1">&#39;whole_video.h5&#39;</span>
+        <span class="k">return</span> <span class="n">suffix_filename</span></div>
+
+<div class="viewcode-block" id="ProtocolUtils.read_pipeline_features"><a class="viewcode-back" href="../../../../../../../py_api.html#bob.gradiant.pad.evaluator.ProtocolUtils.read_pipeline_features">[docs]</a>    <span class="k">def</span> <span class="nf">read_pipeline_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">features_path</span><span class="p">):</span>
+        <span class="n">dict_ground_truth</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">get_ground_truth</span><span class="p">(</span><span class="n">protocol</span><span class="p">)</span>
+
+        <span class="n">dict_all_labels</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">get_all_labels</span><span class="p">()</span>
+        <span class="n">expanded_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_augmentator</span><span class="o">.</span><span class="n">get_expanded_metadata</span><span class="p">(</span><span class="n">dict_ground_truth</span><span class="p">[</span><span class="s1">&#39;Train&#39;</span><span class="p">])</span>
+        <span class="n">expanded_metadata_devices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_augmentator</span><span class="o">.</span><span class="n">get_expanded_metadata</span><span class="p">(</span><span class="n">dict_all_labels</span><span class="p">[</span><span class="s1">&#39;Train&#39;</span><span class="p">])</span>
+        <span class="n">dict_ground_truth</span><span class="p">[</span><span class="s1">&#39;Train&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expanded_metadata</span>
+        <span class="n">dict_all_labels</span><span class="p">[</span><span class="s1">&#39;Train&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expanded_metadata_devices</span>
+
+        <span class="n">databases_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">database</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;aggregate-database&#39;</span><span class="p">:</span>
+            <span class="n">databases_list</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">included_databases</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">subset</span><span class="p">,</span> <span class="n">dbs_dict</span> <span class="ow">in</span> <span class="n">dict_all_labels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">db</span><span class="p">,</span> <span class="n">basenames_dict</span> <span class="ow">in</span> <span class="n">dbs_dict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">dict_all_labels</span><span class="p">[</span><span class="n">subset</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">basenames_dict</span><span class="p">)</span>
+                    <span class="k">del</span> <span class="n">dict_all_labels</span><span class="p">[</span><span class="n">subset</span><span class="p">][</span><span class="n">db</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">databases_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">database</span><span class="o">.</span><span class="n">name</span><span class="p">())</span>
+
+        <span class="n">dict_pipeline_features</span> <span class="o">=</span> <span class="n">PipelineFeaturesFormatLoader</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">features_path</span><span class="p">,</span> <span class="n">dict_ground_truth</span><span class="p">,</span>
+                                                                  <span class="n">dict_all_labels</span><span class="p">,</span> <span class="n">databases_list</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">dict_pipeline_features</span></div>
+
+<div class="viewcode-block" id="ProtocolUtils.save_experiment_result"><a class="viewcode-back" href="../../../../../../../py_api.html#bob.gradiant.pad.evaluator.ProtocolUtils.save_experiment_result">[docs]</a>    <span class="k">def</span> <span class="nf">save_experiment_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">name_pipeline</span><span class="p">,</span> <span class="n">protocol_info_txt</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">subset</span><span class="p">,</span> <span class="n">y_subset</span> <span class="ow">in</span> <span class="n">y</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">experiment_result_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_paths</span><span class="o">.</span><span class="n">get_experiment_result_path</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="n">subset</span><span class="p">)</span>
+            <span class="n">suffix_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_experiment_result_filename_from_parameter</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">experiment_result_path</span><span class="p">,</span> <span class="n">suffix_filename</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__exist_experiment_result_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="n">experiment_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_experiment_result</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">subset</span><span class="p">,</span> <span class="n">y_subset</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">name_pipeline</span><span class="p">,</span>
+                                                                    <span class="n">parameters</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">experiment_paths</span><span class="o">.</span><span class="n">create_dir</span><span class="p">(</span><span class="n">experiment_result_path</span><span class="p">)</span>
+                <span class="n">experiment_result</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">save_protocol_info</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment_paths</span><span class="o">.</span><span class="n">get_experiment_result_path</span><span class="p">(</span><span class="n">protocol</span><span class="p">),</span>
+                                            <span class="s1">&#39;protocol_info.txt&#39;</span><span class="p">),</span> <span class="n">protocol_info_txt</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__exist_experiment_result_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="n">exist</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="n">exist</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">exist</span>
+
+    <span class="k">def</span> <span class="nf">__create_experiment_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">subset</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">name_pipeline</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="n">name_algorithm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_experiment</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">protocol</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">subset</span>
+
+        <span class="k">if</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="n">framerate</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;framerate&#39;</span><span class="p">]</span>
+            <span class="n">total_time_acquisition</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;total_time_acquisition&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">framerate</span> <span class="o">=</span> <span class="mi">30</span>
+            <span class="n">total_time_acquisition</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="n">experiment_result</span> <span class="o">=</span> <span class="n">ExperimentResult</span><span class="p">(</span><span class="n">name_algorithm</span><span class="p">,</span>
+                                             <span class="n">name_pipeline</span><span class="p">,</span>
+                                             <span class="n">database</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span>
+                                             <span class="n">y</span><span class="p">[</span><span class="s1">&#39;scores&#39;</span><span class="p">],</span>
+                                             <span class="n">y</span><span class="p">[</span><span class="s1">&#39;db_labels&#39;</span><span class="p">],</span>
+                                             <span class="n">y</span><span class="p">[</span><span class="s1">&#39;common_pai&#39;</span><span class="p">],</span>
+                                             <span class="n">y</span><span class="p">[</span><span class="s1">&#39;common_capture_device&#39;</span><span class="p">],</span>
+                                             <span class="n">framerate</span><span class="p">,</span>
+                                             <span class="n">total_time_acquisition</span><span class="p">,</span>
+                                             <span class="n">y</span><span class="p">[</span><span class="s1">&#39;output_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ProcessorOutputType</span><span class="o">.</span><span class="n">DISTANCE</span><span class="p">,</span>
+                                             <span class="n">y</span><span class="p">[</span><span class="s1">&#39;access_names&#39;</span><span class="p">],</span>
+                                             <span class="n">database</span><span class="o">.</span><span class="n">get_attack_dict</span><span class="p">(),</span>
+                                             <span class="n">database</span><span class="o">.</span><span class="n">get_capture_devices</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">experiment_result</span>
+
+<div class="viewcode-block" id="ProtocolUtils.pipeline"><a class="viewcode-back" href="../../../../../../../py_api.html#bob.gradiant.pad.evaluator.ProtocolUtils.pipeline">[docs]</a>    <span class="k">def</span> <span class="nf">pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">features_path</span><span class="p">,</span> <span class="n">pipeline_path</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">skip_scores_prediction</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">link_scores_prediction</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">dict_scores_prediction</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">access_grid_config</span><span class="o">.</span>
+                                            <span class="n">get_format_message_from_parameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">),</span>
+                                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;     * Training&#39;</span><span class="p">,</span>
+                                            <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">FG</span><span class="o">.</span><span class="n">lightgrey</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="si">{}</span><span class="se">\&#39;</span><span class="s1"> protocol&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">protocol</span><span class="p">),</span>
+                                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;   Pipeline&#39;</span><span class="p">,</span>
+                                            <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">FG</span><span class="o">.</span><span class="n">lightcyan</span><span class="p">)</span>
+
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">pipeline</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">already_exist_experiment_results</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">database</span><span class="o">.</span><span class="n">get_subsets</span><span class="p">(),</span> <span class="n">parameters</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;reading...&#39;</span><span class="p">,</span>
+                                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;       Loading features&#39;</span><span class="p">,</span>
+                                            <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_pipeline_features</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">features_path</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;ok&#39;</span><span class="p">,</span>
+                                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;       Loading features&#39;</span><span class="p">,</span>
+                                            <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span>
+
+            <span class="n">protocol_info_txt</span> <span class="o">=</span> <span class="n">get_protocol_info</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">database</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="n">protocol</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">       &#39;</span> <span class="o">+</span> <span class="s1">&#39;       &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">protocol_info_txt</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="kc">True</span><span class="p">)),</span>
+                                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;   &gt; protocol Info&#39;</span><span class="p">,</span>
+                                            <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">FG</span><span class="o">.</span><span class="n">orange</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;ok&#39;</span><span class="p">,</span>
+                                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;       Loaded train features (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                                <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Train&#39;</span><span class="p">][</span><span class="s1">&#39;features&#39;</span><span class="p">])),</span>
+                                            <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">skip_training</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="s1">&#39;Skipping training (skip_training=True)&#39;</span><span class="p">,</span>
+                                                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;       Pipeline&#39;</span><span class="p">,</span>
+                                                <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">FG</span><span class="o">.</span><span class="n">lightcyan</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;ok&#39;</span><span class="p">,</span>
+                                                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;       Training </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()),</span>
+                                                <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span>
+                <span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Train&#39;</span><span class="p">])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;ok&#39;</span><span class="p">,</span>
+                                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;       Saving the Pipeline in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pipeline_path</span><span class="p">),</span>
+                                            <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span>
+            <span class="n">pipeline</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">pipeline_path</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">database</span><span class="o">.</span><span class="n">get_subsets</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">subset</span> <span class="o">==</span> <span class="s2">&quot;Train&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;ok&#39;</span><span class="p">,</span>
+                                                    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;       Skipping prediction scores for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">subset</span><span class="p">),</span>
+                                                    <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;ok&#39;</span><span class="p">,</span>
+                                                    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;       Predicting scores for </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">subset</span><span class="p">),</span>
+                                                    <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span>
+                    <span class="n">y</span><span class="p">[</span><span class="n">subset</span><span class="p">]</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">subset</span><span class="p">])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_experiment_result</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">pipeline</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(),</span> <span class="n">protocol_info_txt</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;ok&#39;</span><span class="p">,</span>
+                                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;       Skipping pipeline. Experiment result already exist&#39;</span><span class="p">,</span>
+                                            <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">FG</span><span class="o">.</span><span class="n">green</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProtocolUtils.link_scores_prediction"><a class="viewcode-back" href="../../../../../../../py_api.html#bob.gradiant.pad.evaluator.ProtocolUtils.link_scores_prediction">[docs]</a>    <span class="k">def</span> <span class="nf">link_scores_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">dict_scores_prediction</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;ok&#39;</span><span class="p">,</span>
+                                        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;       Skipping pipeline (skip_scores_prediction=True)&#39;</span><span class="p">,</span>
+                                        <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">FG</span><span class="o">.</span><span class="n">lightred</span><span class="p">)</span>
+
+        <span class="n">suffix_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_experiment_result_filename_from_parameter</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">database</span><span class="o">.</span><span class="n">get_subsets</span><span class="p">():</span>
+            <span class="n">experiment_result_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_paths</span><span class="o">.</span><span class="n">get_experiment_result_path</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="n">subset</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">experiment_result_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">experiment_result_path</span><span class="p">)</span>
+
+            <span class="c1"># Evaluation</span>
+            <span class="n">source_path_scores</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">dict_scores_prediction</span><span class="p">[</span><span class="n">database</span><span class="o">.</span><span class="n">name</span><span class="p">()][</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">type_evaluation</span><span class="p">],</span>
+                <span class="n">protocol</span><span class="p">,</span>
+                <span class="n">subset</span><span class="p">,</span>
+                <span class="n">suffix_filename</span><span class="p">)</span>
+            <span class="n">symlink_force</span><span class="p">(</span><span class="n">source_path_scores</span><span class="p">,</span>
+                          <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">experiment_result_path</span><span class="p">,</span>
+                                       <span class="n">suffix_filename</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ProtocolUtils.evaluation"><a class="viewcode-back" href="../../../../../../../py_api.html#bob.gradiant.pad.evaluator.ProtocolUtils.evaluation">[docs]</a>    <span class="k">def</span> <span class="nf">evaluation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">protocol</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="si">{}</span><span class="se">\&#39;</span><span class="s1"> protocol&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">protocol</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;   &gt; Evaluation&#39;</span><span class="p">,</span>
+                                        <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">FG</span><span class="o">.</span><span class="n">lightcyan</span><span class="p">)</span>
+        <span class="n">dict_paths</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Dev&#39;</span><span class="p">,</span> <span class="s1">&#39;Test&#39;</span><span class="p">]:</span>
+            <span class="n">experiment_result_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_paths</span><span class="o">.</span><span class="n">get_experiment_result_path</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="n">subset</span><span class="p">)</span>
+            <span class="n">dict_paths</span><span class="p">[</span><span class="n">subset</span><span class="p">]</span> <span class="o">=</span> <span class="n">experiment_result_path</span>
+        <span class="n">dict_metrics</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Dev&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;EER&#39;</span><span class="p">],</span>
+                        <span class="s1">&#39;Test&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;EER&#39;</span><span class="p">,</span> <span class="s1">&#39;HTER@EER&#39;</span><span class="p">,</span> <span class="s1">&#39;ACER@EER&#39;</span><span class="p">,</span> <span class="s1">&#39;APCER@EER&#39;</span><span class="p">,</span> <span class="s1">&#39;BPCER@EER&#39;</span><span class="p">]</span>
+                        <span class="p">}</span>
+        <span class="n">dict_performance_visualization</span> <span class="o">=</span> <span class="n">PadEvaluator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">dict_paths</span><span class="p">,</span> <span class="n">dict_metrics</span><span class="p">)</span>
+
+        <span class="n">evaluation_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_paths</span><span class="o">.</span><span class="n">get_evaluation_path</span><span class="p">(</span><span class="n">protocol</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">experiment_paths</span><span class="o">.</span><span class="n">create_dir</span><span class="p">(</span><span class="n">evaluation_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__plot_tables_and_figures</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">evaluation_path</span><span class="p">,</span> <span class="n">dict_performance_visualization</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__plot_tables_and_figures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">evaluation_path</span><span class="p">,</span> <span class="n">dict_performance_visualization</span><span class="p">):</span>
+        <span class="n">date_time</span> <span class="o">=</span> <span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2"> - %H:%M:%S&quot;</span><span class="p">,</span> <span class="n">gmtime</span><span class="p">())</span>
+
+        <span class="n">name_database</span> <span class="o">=</span> <span class="s1">&#39;@&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">database</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="n">protocol</span><span class="p">])</span>
+        <span class="n">pad_visualization_manager</span> <span class="o">=</span> <span class="n">PadVisualizationManager</span><span class="p">(</span><span class="n">name_database</span><span class="p">,</span>
+                                                            <span class="bp">self</span><span class="o">.</span><span class="n">name_experiment</span><span class="p">,</span>
+                                                            <span class="n">date_time</span><span class="p">,</span>
+                                                            <span class="n">dict_performance_visualization</span><span class="p">,</span>
+                                                            <span class="n">store_path</span><span class="o">=</span><span class="n">evaluation_path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">access_grid_config</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">access_grid_config</span><span class="o">.</span><span class="n">total_time_acquisition_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">access_grid_config</span><span class="o">.</span><span class="n">total_time_acquisition_list</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">informer</span><span class="o">.</span><span class="n">highlight_message</span><span class="p">(</span><span class="s1">&#39;Skipping frametime comparison plot because of -1 value in &#39;</span>
+                                                    <span class="s1">&#39;total_time_acquisition_list.&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">WARNING:&#39;</span><span class="p">,</span>
+                                                    <span class="n">color</span><span class="o">=</span><span class="n">Colors</span><span class="o">.</span><span class="n">FG</span><span class="o">.</span><span class="n">yellow</span><span class="p">)</span>
+                    <span class="n">pad_visualization_manager</span><span class="o">.</span><span class="n">plot_fig_pad_time</span><span class="p">()</span>
+
+            <span class="n">pad_visualization_manager</span><span class="o">.</span><span class="n">plot_table</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Gradiant
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../../../" src="../../../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

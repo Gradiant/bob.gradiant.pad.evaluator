@@ -1,0 +1,485 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Python API &mdash; bob.gradiant.pad.evaluator 1.1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="User Guide" href="guide.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> bob.gradiant.pad.evaluator
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Python API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#face-pad-presentation-attack-detector-interface">face-PAD (Presentation Attack Detector) Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#protocols">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utils">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">bob.gradiant.pad.evaluator</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Python API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/py_api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="python-api">
+<h1>Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h1>
+<p>This section includes information for using the pure Python API of
+<code class="docutils literal notranslate"><span class="pre">bob.gradiant.pad.evaluator</span></code>.</p>
+<span class="target" id="module-bob.gradiant.pad.evaluator"></span><div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bob.gradiant.pad.evaluator.Configuration">
+<em class="property">class </em><code class="descclassname">bob.gradiant.pad.evaluator.</code><code class="descname">Configuration</code><span class="sig-paren">(</span><em>type_evaluation</em>, <em>database_paths_filename</em>, <em>databases_list</em>, <em>protocols_list</em>, <em>feature_extractor</em>, <em>pipeline</em>, <em>result_path</em>, <em>access_grid_config=&lt;bob.gradiant.core.classes.accesses.access_grid_config.AccessGridConfig object&gt;</em>, <em>verbose=False</em>, <em>number_threads=1</em>, <em>use_data_augmentation=False</em>, <em>skip_features_extraction=False</em>, <em>dict_extracted_features_paths=None</em>, <em>skip_training=False</em>, <em>skip_scores_prediction=False</em>, <em>dict_scores_prediction=None</em>, <em>recreate=False</em>, <em>configuration_file=&quot;'Configure class'&quot;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/configuration/configuration.html#Configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.Configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="classmethod">
+<dt id="bob.gradiant.pad.evaluator.Configuration.fromfilename">
+<em class="property">classmethod </em><code class="descname">fromfilename</code><span class="sig-paren">(</span><em>type_evaluation</em>, <em>configuration_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/configuration/configuration.html#Configuration.fromfilename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.Configuration.fromfilename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.Configuration.save_to_file">
+<code class="descname">save_to_file</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/configuration/configuration.html#Configuration.save_to_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.Configuration.save_to_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bob.gradiant.pad.evaluator.ConfigurationFileCreator">
+<em class="property">class </em><code class="descclassname">bob.gradiant.pad.evaluator.</code><code class="descname">ConfigurationFileCreator</code><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/configuration/configuration_file_creator.html#ConfigurationFileCreator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ConfigurationFileCreator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="staticmethod">
+<dt id="bob.gradiant.pad.evaluator.ConfigurationFileCreator.run">
+<em class="property">static </em><code class="descname">run</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/configuration/configuration_file_creator.html#ConfigurationFileCreator.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ConfigurationFileCreator.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bob.gradiant.pad.evaluator.EndToEndConfiguration">
+<em class="property">class </em><code class="descclassname">bob.gradiant.pad.evaluator.</code><code class="descname">EndToEndConfiguration</code><span class="sig-paren">(</span><em>type_evaluation</em>, <em>databases_list</em>, <em>protocols_list</em>, <em>face_pad</em>, <em>result_path</em>, <em>framerate=None</em>, <em>total_time_acquisition=None</em>, <em>verbose=False</em>, <em>configuration_file=&quot;'Configure class'&quot;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/configuration/end_to_end_configuration.html#EndToEndConfiguration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.EndToEndConfiguration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="classmethod">
+<dt id="bob.gradiant.pad.evaluator.EndToEndConfiguration.fromfilename">
+<em class="property">classmethod </em><code class="descname">fromfilename</code><span class="sig-paren">(</span><em>configuration_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/configuration/end_to_end_configuration.html#EndToEndConfiguration.fromfilename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.EndToEndConfiguration.fromfilename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.EndToEndConfiguration.save_to_file">
+<code class="descname">save_to_file</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/configuration/end_to_end_configuration.html#EndToEndConfiguration.save_to_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.EndToEndConfiguration.save_to_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="face-pad-presentation-attack-detector-interface">
+<h2>face-PAD (Presentation Attack Detector) Interface<a class="headerlink" href="#face-pad-presentation-attack-detector-interface" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bob.gradiant.pad.evaluator.FacePad">
+<em class="property">class </em><code class="descclassname">bob.gradiant.pad.evaluator.</code><code class="descname">FacePad</code><span class="sig-paren">(</span><em>name</em>, <em>threshold</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/pad/face_pad.html#FacePad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.FacePad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>This class declares an abstract interface for face-PAD</p>
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.FacePad.process">
+<code class="descname">process</code><span class="sig-paren">(</span><em>im</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/pad/face_pad.html#FacePad.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.FacePad.process" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.FacePad.isfinished">
+<code class="descname">isfinished</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/pad/face_pad.html#FacePad.isfinished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.FacePad.isfinished" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.FacePad.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/pad/face_pad.html#FacePad.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.FacePad.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.FacePad.get_decission">
+<code class="descname">get_decission</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/pad/face_pad.html#FacePad.get_decission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.FacePad.get_decission" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="protocols">
+<h2>Protocols<a class="headerlink" href="#protocols" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bob.gradiant.pad.evaluator.EvaluationProtocol">
+<em class="property">class </em><code class="descclassname">bob.gradiant.pad.evaluator.</code><code class="descname">EvaluationProtocol</code><span class="sig-paren">(</span><em>configuration</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/evaluation_protocol.html#EvaluationProtocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.EvaluationProtocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.EvaluationProtocol.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/evaluation_protocol.html#EvaluationProtocol.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.EvaluationProtocol.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bob.gradiant.pad.evaluator.AlgorithmicConstrainedEvaluationProtocol">
+<em class="property">class </em><code class="descclassname">bob.gradiant.pad.evaluator.</code><code class="descname">AlgorithmicConstrainedEvaluationProtocol</code><span class="sig-paren">(</span><em>configuration</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/algorithmic_constrained_evaluation_protocol.html#AlgorithmicConstrainedEvaluationProtocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.AlgorithmicConstrainedEvaluationProtocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">bob.gradiant.pad.evaluator.classes.protocols.evaluation_protocol.EvaluationProtocol</span></code></p>
+<dl class="attribute">
+<dt id="bob.gradiant.pad.evaluator.AlgorithmicConstrainedEvaluationProtocol.base_path">
+<code class="descname">base_path</code><em class="property"> = None</em><a class="headerlink" href="#bob.gradiant.pad.evaluator.AlgorithmicConstrainedEvaluationProtocol.base_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bob.gradiant.pad.evaluator.AlgorithmicConstrainedEvaluationProtocol.parameter_grid">
+<code class="descname">parameter_grid</code><em class="property"> = []</em><a class="headerlink" href="#bob.gradiant.pad.evaluator.AlgorithmicConstrainedEvaluationProtocol.parameter_grid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.AlgorithmicConstrainedEvaluationProtocol.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/algorithmic_constrained_evaluation_protocol.html#AlgorithmicConstrainedEvaluationProtocol.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.AlgorithmicConstrainedEvaluationProtocol.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bob.gradiant.pad.evaluator.AlgorithmicUnconstrainedEvaluationProtocol">
+<em class="property">class </em><code class="descclassname">bob.gradiant.pad.evaluator.</code><code class="descname">AlgorithmicUnconstrainedEvaluationProtocol</code><span class="sig-paren">(</span><em>configuration</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/algorithmic_unconstrained_evaluation_protocol.html#AlgorithmicUnconstrainedEvaluationProtocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.AlgorithmicUnconstrainedEvaluationProtocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">bob.gradiant.pad.evaluator.classes.protocols.evaluation_protocol.EvaluationProtocol</span></code></p>
+<dl class="attribute">
+<dt id="bob.gradiant.pad.evaluator.AlgorithmicUnconstrainedEvaluationProtocol.base_path">
+<code class="descname">base_path</code><em class="property"> = None</em><a class="headerlink" href="#bob.gradiant.pad.evaluator.AlgorithmicUnconstrainedEvaluationProtocol.base_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.AlgorithmicUnconstrainedEvaluationProtocol.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/algorithmic_unconstrained_evaluation_protocol.html#AlgorithmicUnconstrainedEvaluationProtocol.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.AlgorithmicUnconstrainedEvaluationProtocol.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bob.gradiant.pad.evaluator.EndToEndEvaluationProtocol">
+<em class="property">class </em><code class="descclassname">bob.gradiant.pad.evaluator.</code><code class="descname">EndToEndEvaluationProtocol</code><span class="sig-paren">(</span><em>configuration</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/end_to_end_evaluation_protocol.html#EndToEndEvaluationProtocol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.EndToEndEvaluationProtocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">bob.gradiant.pad.evaluator.classes.protocols.evaluation_protocol.EvaluationProtocol</span></code></p>
+<dl class="attribute">
+<dt id="bob.gradiant.pad.evaluator.EndToEndEvaluationProtocol.parameter_grid">
+<code class="descname">parameter_grid</code><em class="property"> = []</em><a class="headerlink" href="#bob.gradiant.pad.evaluator.EndToEndEvaluationProtocol.parameter_grid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="bob.gradiant.pad.evaluator.EndToEndEvaluationProtocol.base_path">
+<code class="descname">base_path</code><em class="property"> = None</em><a class="headerlink" href="#bob.gradiant.pad.evaluator.EndToEndEvaluationProtocol.base_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.EndToEndEvaluationProtocol.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>function_to_run='run'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/end_to_end_evaluation_protocol.html#EndToEndEvaluationProtocol.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.EndToEndEvaluationProtocol.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bob.gradiant.pad.evaluator.ProtocolUtils">
+<em class="property">class </em><code class="descclassname">bob.gradiant.pad.evaluator.</code><code class="descname">ProtocolUtils</code><span class="sig-paren">(</span><em>informer</em>, <em>configuration</em>, <em>experiment_paths</em>, <em>name_experiment</em>, <em>data_augmentator</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/protocol_utils.html#ProtocolUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ProtocolUtils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ProtocolUtils.extract_features">
+<code class="descname">extract_features</code><span class="sig-paren">(</span><em>features_path</em>, <em>database</em>, <em>parameters=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/protocol_utils.html#ProtocolUtils.extract_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ProtocolUtils.extract_features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ProtocolUtils.already_exist_experiment_results">
+<code class="descname">already_exist_experiment_results</code><span class="sig-paren">(</span><em>protocol</em>, <em>subsets</em>, <em>parameters=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/protocol_utils.html#ProtocolUtils.already_exist_experiment_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ProtocolUtils.already_exist_experiment_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="bob.gradiant.pad.evaluator.ProtocolUtils.get_experiment_result_filename_from_parameter">
+<em class="property">static </em><code class="descname">get_experiment_result_filename_from_parameter</code><span class="sig-paren">(</span><em>parameters=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/protocol_utils.html#ProtocolUtils.get_experiment_result_filename_from_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ProtocolUtils.get_experiment_result_filename_from_parameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ProtocolUtils.read_pipeline_features">
+<code class="descname">read_pipeline_features</code><span class="sig-paren">(</span><em>database</em>, <em>protocol</em>, <em>features_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/protocol_utils.html#ProtocolUtils.read_pipeline_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ProtocolUtils.read_pipeline_features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ProtocolUtils.save_experiment_result">
+<code class="descname">save_experiment_result</code><span class="sig-paren">(</span><em>database</em>, <em>y</em>, <em>protocol</em>, <em>name_pipeline</em>, <em>protocol_info_txt</em>, <em>parameters=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/protocol_utils.html#ProtocolUtils.save_experiment_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ProtocolUtils.save_experiment_result" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ProtocolUtils.pipeline">
+<code class="descname">pipeline</code><span class="sig-paren">(</span><em>database</em>, <em>protocol</em>, <em>features_path</em>, <em>pipeline_path</em>, <em>parameters=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/protocol_utils.html#ProtocolUtils.pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ProtocolUtils.pipeline" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ProtocolUtils.link_scores_prediction">
+<code class="descname">link_scores_prediction</code><span class="sig-paren">(</span><em>database</em>, <em>protocol</em>, <em>dict_scores_prediction</em>, <em>parameters=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/protocol_utils.html#ProtocolUtils.link_scores_prediction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ProtocolUtils.link_scores_prediction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ProtocolUtils.evaluation">
+<code class="descname">evaluation</code><span class="sig-paren">(</span><em>database</em>, <em>protocol</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/protocol_utils.html#ProtocolUtils.evaluation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ProtocolUtils.evaluation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bob.gradiant.pad.evaluator.ExperimentPaths">
+<em class="property">class </em><code class="descclassname">bob.gradiant.pad.evaluator.</code><code class="descname">ExperimentPaths</code><span class="sig-paren">(</span><em>base_path</em>, <em>name_pipeline</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/experiment_paths.html#ExperimentPaths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExperimentPaths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ExperimentPaths.get_features_path">
+<code class="descname">get_features_path</code><span class="sig-paren">(</span><em>parameters=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/experiment_paths.html#ExperimentPaths.get_features_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExperimentPaths.get_features_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ExperimentPaths.get_features_path_root">
+<code class="descname">get_features_path_root</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/experiment_paths.html#ExperimentPaths.get_features_path_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExperimentPaths.get_features_path_root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ExperimentPaths.get_scores_path">
+<code class="descname">get_scores_path</code><span class="sig-paren">(</span><em>parameters=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/experiment_paths.html#ExperimentPaths.get_scores_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExperimentPaths.get_scores_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ExperimentPaths.get_scores_path_root">
+<code class="descname">get_scores_path_root</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/experiment_paths.html#ExperimentPaths.get_scores_path_root"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExperimentPaths.get_scores_path_root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ExperimentPaths.get_pipeline_path">
+<code class="descname">get_pipeline_path</code><span class="sig-paren">(</span><em>protocol</em>, <em>parameters=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/experiment_paths.html#ExperimentPaths.get_pipeline_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExperimentPaths.get_pipeline_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ExperimentPaths.get_experiment_result_path">
+<code class="descname">get_experiment_result_path</code><span class="sig-paren">(</span><em>protocol</em>, <em>subset=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/experiment_paths.html#ExperimentPaths.get_experiment_result_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExperimentPaths.get_experiment_result_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ExperimentPaths.get_evaluation_path">
+<code class="descname">get_evaluation_path</code><span class="sig-paren">(</span><em>protocol</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/experiment_paths.html#ExperimentPaths.get_evaluation_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExperimentPaths.get_evaluation_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ExperimentPaths.create_dir">
+<code class="descname">create_dir</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/experiment_paths.html#ExperimentPaths.create_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExperimentPaths.create_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ExperimentPaths.create_link">
+<code class="descname">create_link</code><span class="sig-paren">(</span><em>src</em>, <em>dst</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/protocols/experiment_paths.html#ExperimentPaths.create_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExperimentPaths.create_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="utils">
+<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bob.gradiant.pad.evaluator.ExtractedFeaturesManager">
+<em class="property">class </em><code class="descclassname">bob.gradiant.pad.evaluator.</code><code class="descname">ExtractedFeaturesManager</code><span class="sig-paren">(</span><em>dict_extracted_features_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/utils/extracted_features_manager.html#ExtractedFeaturesManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExtractedFeaturesManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="bob.gradiant.pad.evaluator.ExtractedFeaturesManager.create_features_path_link_to">
+<code class="descname">create_features_path_link_to</code><span class="sig-paren">(</span><em>result_path</em>, <em>database</em>, <em>type_evaluation</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bob/gradiant/pad/evaluator/classes/utils/extracted_features_manager.html#ExtractedFeaturesManager.create_features_path_link_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bob.gradiant.pad.evaluator.ExtractedFeaturesManager.create_features_path_link_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="guide.html" class="btn btn-neutral" title="User Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Gradiant
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
