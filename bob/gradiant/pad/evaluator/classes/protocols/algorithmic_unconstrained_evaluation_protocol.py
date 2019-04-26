@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Gradiant's Biometrics Team <biometrics.support@gradiant.org>
-# Copyright (C) 2017 Gradiant, Vigo, Spain
+# Copyright (C) 2019+ Gradiant, Vigo, Spain
 import os
 
 from bob.gradiant.pad.evaluator.classes.utils.extracted_features_manager import ExtractedFeaturesManager
@@ -24,7 +24,7 @@ class AlgorithmicUnconstrainedEvaluationProtocol(EvaluationProtocol):
 
         super(AlgorithmicUnconstrainedEvaluationProtocol, self).__init__(configuration)
 
-    def run(self, function_to_run='run'):
+    def run(self):
 
         for database in self.configuration.databases_list:
             self.experiment_paths = ExperimentPaths(os.path.join(self.configuration.result_path,database.name()),
@@ -43,27 +43,26 @@ class AlgorithmicUnconstrainedEvaluationProtocol(EvaluationProtocol):
             features_path = self.experiment_paths.get_features_path()
             if self.configuration.skip_scores_prediction:
                 self.informer.highlight_message(message='ok',
-                                                title='\t\tSkipping features extraction (skip_scores_prediction=True)',
+                                                title='  Skipping features extraction (skip_scores_prediction=True)',
                                                 color=Colors.FG.lightred)
             else:
                 if self.configuration.skip_features_extraction:
                     self.informer.highlight_message(message='ok',
-                                                    title='\t\tSkipping features extraction '
+                                                    title='  Skipping features extraction '
                                                           '(skip_features_extraction=True)',
                                                     color=Colors.FG.lightred)
 
                     if self.configuration.dict_extracted_features_paths:
                         extracted_features_manager = ExtractedFeaturesManager(self.configuration.dict_extracted_features_paths)
-                        extracted_features_manager.create_features_path_link_to(self.experiment_paths.get_features_path(),
-                                                                                database)
+                        extracted_features_manager.create_features_path_link_to(self.experiment_paths.get_features_path(), database, self.configuration.type_evaluation)
                     else:
                         raise Warning('dict_extracted_features_paths configuration '
                                       'is not set when skip_features_extraction==True.')
                 else:
                     self.informer.highlight_message('Using whole video and all frames',
-                                                    title='\tExtracting features',
+                                                    title=' Extracting features',
                                                     color=Colors.FG.lightcyan)
-                    self.protocol_utils.extract_features(features_path, database, function_to_run)
+                    self.protocol_utils.extract_features(features_path, database)
             # -----------------------------------------------------------------
 
             for protocol in self.configuration.protocols_list:
@@ -74,7 +73,7 @@ class AlgorithmicUnconstrainedEvaluationProtocol(EvaluationProtocol):
                     # -----------------------------------------------------------------
 
                     # Evaluation ------------------------------------------------------
-                    self.protocol_utils.evaluation(database, protocol, database.get_subsets())
+                    self.protocol_utils.evaluation(database, protocol)
                     # -----------------------------------------------------------------
                 else:
                     raise Warning('Skipped \'{}\' protocol. T'

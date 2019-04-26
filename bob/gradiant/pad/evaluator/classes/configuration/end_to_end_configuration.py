@@ -8,6 +8,11 @@ from bob.gradiant.pad.evaluator.classes.configuration.evaluation_config import e
     evaluation_long_names
 from bob.gradiant.face.databases import FaceDatabaseProvider, face_available_databases
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 
 class EndToEndConfiguration(object):
 
@@ -19,7 +24,6 @@ class EndToEndConfiguration(object):
                  result_path,
                  framerate=None,
                  total_time_acquisition=None,
-                 threshold = None,
                  verbose=False,
                  configuration_file='\'Configure class\''):
 
@@ -30,7 +34,6 @@ class EndToEndConfiguration(object):
         self.result_path = result_path
         self.framerate = framerate
         self.total_time_acquisition = total_time_acquisition
-        self.threshold = threshold
         self.verbose = verbose
         self.configuration_file = configuration_file
         self.__set_git_info()
@@ -46,7 +49,7 @@ class EndToEndConfiguration(object):
         dirname = os.path.dirname(configuration_file)
         basename = os.path.splitext(os.path.basename(configuration_file))[0]
         sys.path.append(dirname)
-        _tmp = __import__(basename, globals(), locals(), ['object'], -1)
+        _tmp = __import__(basename, globals(), locals(), ['object'])
         databases_list = _tmp.databases_list
         protocols_list = _tmp.protocols_list
         face_pad = _tmp.face_pad
@@ -54,7 +57,6 @@ class EndToEndConfiguration(object):
         verbose = _tmp.verbose
         framerate = _tmp.framerate_end_to_end
         total_time_acquisition = _tmp.total_time_acquisition_end_to_end
-        threshold = _tmp.threshold_end_to_end
 
         return cls(type_evaluation,
                    databases_list,
@@ -63,29 +65,30 @@ class EndToEndConfiguration(object):
                    result_path,
                    framerate=framerate,
                    total_time_acquisition=total_time_acquisition,
-                   threshold = threshold,
                    verbose=verbose,
                    configuration_file=configuration_file
                    )
 
     def __set_git_info(self):
         self.short_commit = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
-        self.repo = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).rsplit('/', 1)[1][:-1]
+        self.repo = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).decode('utf-8').rsplit('/', 1)[1][:-1]
 
     def __check_configuration(self):
         logging.info('Checking end-to-end configuration')
 
         if self.databases_list is None:
             raise TypeError(
-                'databases_list is not defined (None Value). Please fill it out on \'{}\''.format(self.configuration_file))
+                'databases_list is not defined (None Value). Please fill it out on \'{}\''.format(
+                    self.configuration_file))
         else:
             if type(self.databases_list) is not list:
                 raise TypeError(
-                    'databases_list must be defined as a list. Please fill it out on \'{}\''.format(self.configuration_file))
+                    'databases_list must be defined as a list. Please fill it out on \'{}\''.format(
+                        self.configuration_file))
             else:
-                self.databases = []
+                databases_list_objects = []
                 for key_database in self.databases_list:
-                    if isinstance(key_database, str):
+                    if isinstance(key_database, basestring):
                         if key_database not in face_available_databases:
                             raise ValueError(
                                 '\'{}\' is not one of the implemented databases or the path is not we. Try with: {}'.format(
@@ -94,7 +97,8 @@ class EndToEndConfiguration(object):
                             database = FaceDatabaseProvider.get(key_database)
                     else:
                         database = key_database
-                    self.databases.append(database)
+                    databases_list_objects.append(database)
+                self.databases_list = databases_list_objects
 
         if self.protocols_list is None:
             raise TypeError(
@@ -118,7 +122,7 @@ class EndToEndConfiguration(object):
             raise TypeError(
                 'result_path is not defined (None Value). Please fill it out on \'{}\''.format(self.configuration_file))
 
-        if not isinstance(self.result_path, str):
+        if not isinstance(self.result_path, basestring):
             raise TypeError(
                 'result_path is not defined (None Value). Please fill it out on \'{}\''.format(self.configuration_file))
 
@@ -147,18 +151,6 @@ class EndToEndConfiguration(object):
                     'total_time_acquisition must be defined as a int. Please fill it out on \'{}\''.format(
                         self.configuration_file))
 
-        if self.threshold is None:
-            raise TypeError(
-                'threshold is not defined (None Value). Please fill it out on \'{}\''.format(
-                    self.configuration_file))
-        else:
-            if type(self.threshold) is not float:
-                raise TypeError(
-                    'threshold must be defined as a float. Please fill it out on \'{}\''.format(
-                        self.configuration_file))
-
-
-
 
     def save_to_file(self, filename=None):
         if filename is None:
@@ -174,14 +166,13 @@ class EndToEndConfiguration(object):
         info = 'Configuration:\n'
         info += '\tRequired:\n'
         info += attribute.format('type evaluation', evaluation_long_names[self.type_evaluation])
-        info += attribute.format('database', self.databases)
+        info += attribute.format('database', self.databases_list)
         info += attribute.format('protocols', self.protocols_list)
         info += attribute.format('face_pad', self.face_pad)
         info += attribute.format('result_path', self.result_path)
         info += attribute.format('verbose', self.verbose)
         info += attribute.format('framerate', self.framerate)
         info += attribute.format('total_time_acquisition', self.total_time_acquisition)
-        info += attribute.format('threshold', self.threshold)
 
         info += '\tRepository:\n'
         info += attribute.format('name', self.repo)

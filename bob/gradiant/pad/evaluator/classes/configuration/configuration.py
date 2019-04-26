@@ -4,23 +4,29 @@ import subprocess
 import sys
 from bob.gradiant.core import FeaturesExtractorManager
 from bob.gradiant.core import FeaturesSaver
-from bob.gradiant.pipelines import Pipeline
-from bob.gradiant.core import FeaturesExtractor
-from bob.gradiant.face.databases import FaceDatabaseProvider, face_available_databases
+from bob.gradiant.pipelines import Pipeline, DEFAULT_KEYS_CORRESPONDENCES
+from bob.gradiant.core import FeaturesExtractor, AccessGridConfig
+from bob.gradiant.face.databases import FaceDatabaseProvider, face_available_databases, export_database_paths_from_file
 from bob.gradiant.pad.evaluator.classes.configuration.evaluation_config import evaluation_use_framerate_and_time, \
     evaluation_long_names
+
+try:
+    basestring
+except NameError:
+    basestring = str
 
 
 class Configuration(object):
 
-    def __init__(self, type_evaluation,
+    def __init__(self,
+                 type_evaluation,
+                 database_paths_filename,
                  databases_list,
                  protocols_list,
                  feature_extractor,
                  pipeline,
                  result_path,
-                 framerate_list=None,
-                 total_time_acquisition_list=None,
+                 access_grid_config=AccessGridConfig(),
                  verbose=False,
                  number_threads=1,
                  use_data_augmentation=False,
@@ -35,6 +41,7 @@ class Configuration(object):
             raise ValueError("type_evaluation is not available. Try with {}".format(evaluation_long_names.keys()))
 
         self.type_evaluation = type_evaluation
+        self.database_paths_filename = database_paths_filename
         self.databases_list = databases_list
         self.protocols_list = protocols_list
         self.feature_extractor = feature_extractor
@@ -42,8 +49,7 @@ class Configuration(object):
         self.result_path = result_path
         self.features_extractor_manager = FeaturesExtractorManager(self.feature_extractor,
                                                                    FeaturesSaver(self.result_path))
-        self.framerate_list = framerate_list
-        self.total_time_acquisition_list = total_time_acquisition_list
+        self.access_grid_config = access_grid_config
         self.verbose = verbose
         self.number_threads = number_threads
         self.use_data_augmentation = use_data_augmentation
@@ -56,6 +62,9 @@ class Configuration(object):
         self.configuration_file = configuration_file
         self.__set_git_info()
         self.__check_configuration()
+        self.__set_pipeline_key_correspondencies()
+        if self.database_paths_filename:
+            export_database_paths_from_file(self.database_paths_filename)
 
     @classmethod
     def fromfilename(cls, type_evaluation, configuration_file):
@@ -69,44 +78,61 @@ class Configuration(object):
         dirname = os.path.dirname(configuration_file)
         basename = os.path.splitext(os.path.basename(configuration_file))[0]
         sys.path.append(dirname)
-        _tmp = __import__(basename, globals(), locals(), ['object'], -1)
+        _tmp = __import__(basename, globals(), locals(), ['object'])
+        database_paths_filename = _tmp.database_paths_filename
         databases_list = _tmp.databases_list
         protocols_list = _tmp.protocols_list
         feature_extractor = _tmp.feature_extractor
-        pipeline = _tmp.pipeline
         result_path = os.path.join(_tmp.result_path, type_evaluation)
         features_extractor_manager = FeaturesExtractorManager(feature_extractor,
                                                               FeaturesSaver(result_path))
-        if evaluation_use_framerate_and_time[type_evaluation]:
-            framerate_list = _tmp.framerate_list
-            total_time_acquisition_list = _tmp.total_time_acquisition_list
-        else:
-            framerate_list = None
-            total_time_acquisition_list = None
+
+        if type_evaluation == "ACE" or type_evaluation == "AUE":
+            pipeline = _tmp.pipeline
+            categorized_scores_plotter = _tmp.categorized_scores_plotter
+
+            if evaluation_use_framerate_and_time[type_evaluation]:
+                access_grid_config = _tmp.access_grid_config
+            else:
+                access_grid_config = None
+
+            skip_features_extraction = _tmp.skip_features_extraction
+            if hasattr(_tmp, 'dict_extracted_features_paths'):
+                dict_extracted_features_paths = _tmp.dict_extracted_features_paths
+            else:
+                dict_extracted_features_paths = None
+            skip_training = _tmp.skip_training
+            skip_scores_prediction = _tmp.skip_scores_prediction
+            if hasattr(_tmp, 'dict_scores_prediction'):
+                dict_scores_prediction = _tmp.dict_scores_prediction
+            else:
+                dict_scores_prediction = None
+        else:  # FE
+            pipeline = None
+            categorized_scores_plotter = None
+            skip_features_extraction = False
+            dict_extracted_features_paths = {}
+            skip_training = True
+            skip_scores_prediction = True
+            dict_scores_prediction = {}
+            try:
+                access_grid_config = _tmp.access_grid_config
+            except:
+                access_grid_config = None
+
         verbose = _tmp.verbose
         number_threads = _tmp.number_threads
         use_data_augmentation = _tmp.use_data_augmentation
-        skip_features_extraction = _tmp.skip_features_extraction
-        if hasattr(_tmp, 'dict_extracted_features_paths'):
-            dict_extracted_features_paths = _tmp.dict_extracted_features_paths
-        else:
-            dict_extracted_features_paths = None
-        skip_training = _tmp.skip_training
-        skip_scores_prediction = _tmp.skip_scores_prediction
-        if hasattr(_tmp, 'dict_scores_prediction'):
-            dict_scores_prediction = _tmp.dict_scores_prediction
-        else:
-            dict_scores_prediction = None
-
         recreate = _tmp.recreate
+
         return cls(type_evaluation,
+                   database_paths_filename,
                    databases_list,
                    protocols_list,
                    feature_extractor,
                    pipeline,
                    result_path,
-                   framerate_list=framerate_list,
-                   total_time_acquisition_list=total_time_acquisition_list,
+                   access_grid_config=access_grid_config,
                    verbose=verbose,
                    number_threads=number_threads,
                    use_data_augmentation=use_data_augmentation,
@@ -119,12 +145,23 @@ class Configuration(object):
                    configuration_file=configuration_file
                    )
 
+    def __set_pipeline_key_correspondencies(self):
+        if self.pipeline:
+            for processor in self.pipeline.processor_list:
+                key_correspondencies = DEFAULT_KEYS_CORRESPONDENCES
+                key_correspondencies['labels_key'] = 'common_pai'
+                processor.key_correspondencies = key_correspondencies
+
     def __set_git_info(self):
         self.short_commit = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
-        self.repo = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).rsplit('/', 1)[1][:-1]
+        self.repo = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).decode('utf-8').rsplit('/', 1)[1][:-1]
 
     def __check_configuration(self):
         logging.info('Checking configuration')
+
+        if self.database_paths_filename:
+            if not os.path.isfile(self.database_paths_filename):
+                raise IOError("database_paths_filename must be a json file.")
 
         if self.databases_list is None:
             raise TypeError('databases_list is not defined (None Value). '
@@ -136,7 +173,7 @@ class Configuration(object):
             else:
                 databases_list_objects = []
                 for key_database in self.databases_list:
-                    if isinstance(key_database, str):
+                    if isinstance(key_database, basestring):
                         if key_database not in face_available_databases:
                             raise ValueError('\'{}\' is not one of the implemented databases or the path is not we. '
                                              'Try with: {}'.format(key_database, face_available_databases))
@@ -175,41 +212,29 @@ class Configuration(object):
                     'Please fill feature_extractor and result_path out on \'{}\''.format(
                         self.configuration_file))
 
-        if self.pipeline is None:
-            raise TypeError(
-                'pipeline is not defined (None Value). Please fill it out on \'{}\''.format(self.configuration_file))
-        else:
-            if not isinstance(self.pipeline, Pipeline):
+        if self.type_evaluation != 'FE':  # Features Extraction
+            if self.pipeline is None:
                 raise TypeError(
-                    'pipeline must be defined as a bob.gradiant.pipeline.Pipelines class. Please fill it out on \'{}\''.format(
-                        self.configuration_file))
+                    'pipeline is not defined (None Value). Please fill it out on \'{}\''.format(self.configuration_file))
+            else:
+                if not isinstance(self.pipeline, Pipeline):
+                    raise TypeError(
+                        'pipeline must be defined as a bob.gradiant.pipeline.Pipelines class. Please fill it out on \'{}\''.format(
+                            self.configuration_file))
 
         if self.result_path is None:
             raise TypeError(
                 'result_path is not defined (None Value). Please fill it out on \'{}\''.format(self.configuration_file))
 
-        if not isinstance(self.result_path, str):
+        if not isinstance(self.result_path, basestring):
             raise TypeError(
                 'result_path is not defined (None Value). Please fill it out on \'{}\''.format(self.configuration_file))
 
         if evaluation_use_framerate_and_time[self.type_evaluation]:
-            if self.framerate_list is None:
-                raise TypeError(
-                    'framerate_list is not defined (None Value). Please fill it out on \'{}\''.format(
-                        self.configuration_file))
-            else:
-                if type(self.framerate_list) is not list:
+            if self.type_evaluation != 'FE':  # Features Extraction
+                if not isinstance(self.access_grid_config, AccessGridConfig):
                     raise TypeError(
-                        'framerate_list must be defined as a list. Please fill it out on \'{}\''.format(
-                            self.configuration_file))
-            if self.total_time_acquisition_list is None:
-                raise TypeError(
-                    'total_time_acquisition_list is not defined (None Value). Please fill it out on \'{}\''.format(
-                        self.configuration_file))
-            else:
-                if type(self.total_time_acquisition_list) is not list:
-                    raise TypeError(
-                        'total_time_acquisition_list must be defined as a list. Please fill it out on \'{}\''.format(
+                        'access_grid_config must be defined as a AccessGridConfig. Please fill it out on \'{}\''.format(
                             self.configuration_file))
 
         if not isinstance(self.verbose, bool):
@@ -274,8 +299,15 @@ class Configuration(object):
         info += '\tRequired:\n'
         info += attribute.format('type evaluation', evaluation_long_names[self.type_evaluation])
         if evaluation_use_framerate_and_time[self.type_evaluation]:
-            info += attribute.format('framerate_list', self.framerate_list)
-            info += attribute.format('total_time_acquisition_list', self.total_time_acquisition_list)
+            info += attribute.format('access_grid_config -> framerate_list',
+                                     self.access_grid_config.framerate_list)
+            info += attribute.format('access_grid_config -> total_time_acquisition_list',
+                                     self.access_grid_config.total_time_acquisition_list)
+            info += attribute.format('access_grid_config -> starting_time_acquisition_list',
+                                     self.access_grid_config.starting_time_acquisition_list)
+            info += attribute.format('access_grid_config -> center_video_acquisition_list',
+                                     self.access_grid_config.center_video_acquisition_list)
+
         info += attribute.format('database_list', self.databases_list)
         info += attribute.format('protocols_list', self.protocols_list)
         info += attribute.format('feature_extractor', self.feature_extractor)

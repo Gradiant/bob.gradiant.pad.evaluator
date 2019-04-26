@@ -1,5 +1,5 @@
 from bob.gradiant.pad.evaluator.classes.dummies.dummy_access import DummyAccess
-from bob.gradiant.core import Database, TypeDatabase, AccessModificator
+from bob.gradiant.core import Database, TypeDatabase, AccessModifier
 
 
 class DummyDatabase(Database):
@@ -29,7 +29,7 @@ class DummyDatabase(Database):
                       'Test samples': 2}
         return dict_info
 
-    def get_all_accesses(self, access_modificator=AccessModificator()):
+    def get_all_accesses(self, access_modificator=AccessModifier()):
         dict_all_accesses = {}
         list_accesses = []
         dict_accesses_by_subset = self.get_accesses_by_subset(access_modificator)
@@ -38,7 +38,7 @@ class DummyDatabase(Database):
         list_accesses.sort(key=lambda x: x.name)
         dict_all_accesses['All'] = list_accesses
 
-    def get_accesses_by_subset(self, access_modificator=AccessModificator()):
+    def get_accesses_by_subset(self, access_modificator=AccessModifier()):
         dict_accesses_by_subset = {}
         for subset in ['Train', 'Dev', 'Test']:
             list_accesses = []
