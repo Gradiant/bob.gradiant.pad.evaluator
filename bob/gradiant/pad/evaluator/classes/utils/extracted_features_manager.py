@@ -12,7 +12,7 @@ class ExtractedFeaturesManager():
 
         for key, values in dict_extracted_features_paths.iteritems():
 
-            if not isinstance(values, basestring):
+            if not isinstance(values, str):
                 raise TypeError('dict_extracted_features_paths[\'{}\'] must be a string value'.format(key))
 
             if not os.path.isdir(values):
